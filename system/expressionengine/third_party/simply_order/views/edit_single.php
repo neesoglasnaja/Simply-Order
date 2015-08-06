@@ -11,7 +11,14 @@
 	    $("#sortable1, #sortable2").sortable({ 
 		opacity: 0.6,
 		cursor: 'move',
-		connectWith: ".connectedSortable"
+		connectWith: ".connectedSortable",
+		start: function( event, ui ){
+			console.log($('#sortable2').height()+60);
+			$('#sortable2').height($('#sortable2').height()+60);
+		},
+		stop: function( event, ui ){
+			$('#sortable2').removeAttr('style');
+		}
 	    });
 	});
 		
@@ -21,14 +28,26 @@
 
 <ul id="sortable1" class="connectedSortable">
     <li class="ui-state-default">Entries you have:</li>
-    <?php foreach ($entries->result_array() as $single_one) { ?>
+    <?php foreach ($entries->result_array() as $single_one) {
+    	$hide = false;
+    if (isset($old_entries) && $old_entries) {
+    	    foreach ($old_entries->result_array() as $old_entry) {
+    	    	if(strcmp ($old_entry['entry_id'], $single_one['entry_id'])==0){
+    	    		$hide = true;
+    	    	}
+    	    }
+	} 
+	if($hide != true){
+	?>
+
         <li id="entry_id_<?php echo $single_one['entry_id']; ?>" class="ui-state-default">
 	    <?php 
 	    echo form_hidden('entry_id', $single_one['entry_id']);
 	    echo form_input('title', $single_one['title'], 'readonly');
 	    ?>
         </li>
-    <?php } ?>
+    <?php }
+} ?>
 </ul>
 
 <?php 
@@ -43,7 +62,7 @@ echo form_open($form_action, $attributes);
     <ul id="sortable2" class="connectedSortable">
 	<?php 
 	if (isset($old_entries) && $old_entries) {
-	    foreach ($old_entries->result_array() as $old_entry) {
+	    foreach (array_reverse($old_entries->result_array()) as $old_entry) {
 		?>
 	        <li id="entry_id_<?php echo $old_entry['entry_id']; ?>" class="ui-state-default">
 		    <?php 

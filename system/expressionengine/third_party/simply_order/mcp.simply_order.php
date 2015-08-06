@@ -220,7 +220,7 @@ class Simply_order_mcp {
 	$title_extra = (isset($vars['title_extra'])) ? ': ' . $vars['title_extra'] : '';
 
 	// Lang key is required to know which key take from the language file.
-	$this->EE->cp->set_variable('cp_page_title', lang($lang_key) . $title_extra);
+	$this->EE->view->cp_page_title = lang($lang_key) . $title_extra;
 
 	// To make the breadcrumb management easier, I define it one time here.
 	$this->EE->cp->set_breadcrumb($this->_base_url, lang('simply_order_module_name'));
